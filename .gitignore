@@ -1,0 +1,4 @@
+/.vs/Convert2OfxConsole/v15
+/Convert2OfxConsole/bin
+Debug
+/packages/LumenWorksCsvReader.3.9/lib/net20/*.pdb
