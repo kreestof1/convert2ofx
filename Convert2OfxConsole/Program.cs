@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using System.IO;
 using System.Data;
-
+using log4net;
 using LumenWorks.Framework.IO.Csv;
 
 namespace Convert2OfxConsole
@@ -15,50 +15,84 @@ namespace Convert2OfxConsole
     /// 
     /// Format d'échange OFX : http://www.ofx.net/
     /// 
+    /// Log4Net best practice : https://stackify.com/log4net-guide-dotnet-logging/
+    /// 
     /// </summary>
     class Program
     {
+        //Declare an instance for log4net
+        private static readonly ILog Log =
+              LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         static void Main(string[] args)
         {
+            
             string dir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
             string dirtemp = dir + @"\Temp\";
+            string dirlog = dir + @"\Logs\";
 
-            DirectoryInfo d = new DirectoryInfo(dirtemp);//Assuming Test is your Folder
+            DirectoryInfo d = new DirectoryInfo(dirlog);//Assuming Test is your Folder
+
+            if (!d.Exists)
+            {
+                d.Create();
+                Console.WriteLine("Répertoire log créé : " + d.ToString());
+            }
+
+            Log.Info("Start program...");
+            
+            d = new DirectoryInfo(dirtemp);//Assuming Test is your Folder
+
+            if (!d.Exists)
+            {
+                d.Create();
+                Console.WriteLine("Répertoire temp créé : " + d.ToString());
+            }
+
             FileInfo[] Files = d.GetFiles("*.csv"); //Getting CSV files
 
             Console.WriteLine("Répertoire de travail : " + d.ToString());
 
-            string str = "";
-
-            int i = 0;
-
-            foreach (FileInfo file in Files)
+            if (Files.Count() == 0)
             {
-                i++;
+                Log.Error("Aucun fichier à traiter !");
+            }
+            else
+            {
+                string str = "";
 
-                str = file.Name;
-                Console.WriteLine("fichier traité : " + str);
+                int i = 0;
 
-                DataTable dt = GetTable();
-                dt = FetchFromCSVFile(dirtemp + str);
+                foreach (FileInfo file in Files)
+                {
+                    i++;
 
-                string fileOutput = string.Format(i + "-export-operations-{0}-{1}-{2}_{3}-{4}-{5}",
-                                            DateTime.Now.Day,
-                                            (DateTime.Now.Month).ToString(),
-                                            (DateTime.Now.Year).ToString(),
-                                            (DateTime.Now.Hour).ToString(),
-                                            (DateTime.Now.Minute).ToString(),
-                                            (DateTime.Now.Second).ToString()
-                                            );
+                    str = file.Name;
+                    Console.WriteLine("fichier traité : " + str);
 
-                exportToQifFile(dirtemp + fileOutput + ".qif", dt);
-                
-                File.Move(dirtemp + file.Name, dirtemp + i + "_traité_" + file.Name);
+                    DataTable dt = GetTable();
+                    dt = FetchFromCSVFile(dirtemp + str);
+
+                    string fileOutput = string.Format(i + "-export-operations-{0}-{1}-{2}_{3}-{4}-{5}",
+                                                DateTime.Now.Day,
+                                                (DateTime.Now.Month).ToString(),
+                                                (DateTime.Now.Year).ToString(),
+                                                (DateTime.Now.Hour).ToString(),
+                                                (DateTime.Now.Minute).ToString(),
+                                                (DateTime.Now.Second).ToString()
+                                                );
+
+                    exportToQifFile(dirtemp + fileOutput + ".qif", dt);
+
+                    File.Move(dirtemp + file.Name, dirtemp + i + "_traité_" + file.Name);
+                }
             }
 
-            //exportToOfxFile(dir + @"\Temp\" + fileOutput + ".ofx", dt);
+            
 
+            //exportToOfxFile(dir + @"\Temp\" + fileOutput + ".ofx", dt);
+            Log.Info("End program...");
         }
 
         private static DataTable GetTable()
@@ -125,8 +159,8 @@ namespace Convert2OfxConsole
 
             // Closes the text stream.
             sw.Close();
-
         }
+
 
         private static void exportToOfxFile(string fileOut, DataTable dt)
         {

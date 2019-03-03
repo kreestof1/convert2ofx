@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Convert2OfxConsole")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Convert Boursorama's CVS to Money's OFX ")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Christophe Barré")]
 [assembly: AssemblyProduct("Convert2OfxConsole")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
@@ -34,3 +34,6 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+// Let log4net know that it can look for configuration in the config file log4net.config
+[assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]
