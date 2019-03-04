@@ -15,7 +15,12 @@ These instructions will get you a copy of the project up and running on your loc
 
 * **Christophe Barré** - *Initial work* - [kristofias](https://github.com/kristofias)
 
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
+[MIT](https://choosealicense.com/licenses/mit/)
