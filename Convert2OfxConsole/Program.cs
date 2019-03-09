@@ -56,7 +56,7 @@ namespace Convert2OfxConsole
 
             if (Files.Count() == 0)
             {
-                Log.Error("Aucun fichier à traiter !");
+                Log.Warn("Aucun fichier à traiter !");
             }
             else
             {
